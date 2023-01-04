@@ -4,9 +4,16 @@ import subprocess
 
 
 def main():
-    args = sys.argv[1:]
-    return subprocess.call(['graphtage -k --from-json --to-json <(wildq --ini "." ' + args[0] + ') <(wildq --ini "." ' + args[1] + ')'], shell=True)
-
+    connection_string = (
+        'DRIVER=SQL Server;'
+        'SERVER=10.0.9.242;'
+        'DATABASE=testrd_omscommon;'
+        'PORT=50603;'
+        'UID=root;'
+        'PWD=redhatbolsa;'
+        'charset=utf8mb4;'
+    )
+    pass
 
 if __name__ == '__main__':
     main()
