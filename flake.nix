@@ -32,7 +32,13 @@
             buildInputs = (old.buildInputs or [ ]) ++ [ self.poetry ];
           }
         );
-
+        pyodbc = super.pyodbc.overridePythonAttrs (
+          old: {
+            nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+              pkgs.unixODBC
+          ];
+          }
+        );
       };
       my-name = "compare_sql_tables";
     in {
