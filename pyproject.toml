@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "compare_sql_tables"
+version = "0.1.0"
+description = ""
+authors = ["Roland Coeurjoly <rolandcoeurjoly@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+wildq = "^1.1.11"
+graphtage = "^0.2.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+compare_sql_tables = "compare_sql_tables:main"
