@@ -1,0 +1,4 @@
+Artifact Type, Primary Text, Name, Description, Owner
+MyRequirementType2, "The vehicle must have one wheel.", "Vehicle wheels", "This requirement defines the rules for vehicles", "Joe Blogs"
+MyRequirementType, "The vehicle must have two wheels.", "Vehicle wheels", "This requirement defines the rules for vehicles", "Joe Blogs"
+MyRequirementType, "The vehicle must have one wheels.", "Vehicle wheels", "This requirement defines the rules for vehicles", "Joe Blogs"
