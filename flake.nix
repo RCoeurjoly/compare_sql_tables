@@ -39,6 +39,11 @@
           ];
           }
         );
+        mysql-connector-python = super.mysql-connector-python.overridePythonAttrs (
+          old: {
+            buildInputs = (old.buildInputs or [ ]) ++ [ self.setuptools ];
+          }
+        );
       };
       my-name = "compare_sql_tables";
     in {
