@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 wildq = "^1.1.11"
 graphtage = "^0.2.6"
+mysql-connector-python = "8.0.23"
 
 
 [build-system]
