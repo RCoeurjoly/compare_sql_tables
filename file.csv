@@ -1,0 +1,8 @@
+firm_id,service_id,user_id,data_type,data_value
+TEST,toms0df,,ACCOUNT_MANAGEMENT,Y
+TEST,toms0df,,ALARM_CENTER,Y
+TEST,toms0df,,PORTFOLIO_MD_UPDATE_SECS,1
+TEST,toms0df,,RISKS_CALCULATE_MARGIN,Y
+TEST,toms0df,,STORE_TRADE,Y
+TEST,toms0df,,STORE_TRADE_EXTENDED_INFO,Y
+TEST,toms0df,toms0df,MDCLI_MD_NAME,toms0md
