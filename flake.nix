@@ -27,7 +27,7 @@
             buildInputs = (old.buildInputs or [ ]) ++ [ self.flit-core ];
           }
         );
-        wildq = super.wildq.overridePythonAttrs (
+        rich-cli = super.rich-cli.overridePythonAttrs (
           old: {
             buildInputs = (old.buildInputs or [ ]) ++ [ self.poetry ];
           }

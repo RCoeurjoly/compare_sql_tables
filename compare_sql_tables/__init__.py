@@ -42,10 +42,10 @@ def get_csv_from_query(host, port, user, password, database, table):
 @click.option("--password2", default=None, help="Database 2 password.")
 @click.option("--database2", required=True, default=None, help="Database 2 name.")
 @click.option("--ignore_column", multiple=True, default=[], help="Column to ignore. Can be specified multiple times")
-def main(host,  port,  user,  password,  database,
-         host2, port2, user2, password2, database2,
-         table,
-         ignore_column):
+def compare_tables(host,  port,  user,  password,  database,
+                   host2, port2, user2, password2, database2,
+                   table,
+                   ignore_column):
     if host2 is None:
         host2 = host
     if port2 is None:
@@ -61,14 +61,20 @@ def main(host,  port,  user,  password,  database,
     csv1 = get_csv_from_query(host, port, user, password, database, table)
     csv2 = get_csv_from_query(host2, port2, user2, password2, database2, table)
 
-    rc = subprocess.call(['graphtage -k '
+    rc = subprocess.call(['graphtage -k -f csv '
                             + csv1 + ' '
                             + csv2], shell=True)
-    #breakpoint()
     os.remove(csv1)
     os.remove(csv2)
-    return rc
+    if rc != 0:
+        raise Exception("Graphtage return value is " + str(rc))
 
+def main():
+    try:
+        compare_tables(standalone_mode=False)
+        return 0
+    except:
+        return 1
 
 if __name__ == '__main__':
-    main(standalone_mode=False)
+    main()
