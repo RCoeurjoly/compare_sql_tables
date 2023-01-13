@@ -8,14 +8,20 @@ import uuid
 import pdb
 
 
-def get_csv_from_query(host, port, user, password, database, table):
+def get_csv_from_query(host, port, user, password, database, table, where):
     cnx = mysql.connector.connect(user=user,
                                   password=password,
                                   host=host,
                                   port=port,
                                   database=database)
     cursor = cnx.cursor()
-    query = "Select * from " + table + ";"
+    if where == "":
+        complete_where = ""
+    else:
+        complete_where = " where " + where
+
+    query = "Select * from " + table + complete_where + ";"
+    print(query)
     cursor.execute(query)
     field_names = [i[0] for i in cursor.description ]
     rows = cursor.fetchall()
@@ -41,11 +47,13 @@ def get_csv_from_query(host, port, user, password, database, table):
 @click.option("--user2", default=None, help="Database 2 user.")
 @click.option("--password2", default=None, help="Database 2 password.")
 @click.option("--database2", required=True, default=None, help="Database 2 name.")
+@click.option("--where", default="", help="Where of query.")
 @click.option("--ignore_column", multiple=True, default=[], help="Column to ignore. Can be specified multiple times")
 def compare_tables(host,  port,  user,  password,  database,
                    host2, port2, user2, password2, database2,
                    table,
-                   ignore_column):
+                   ignore_column,
+                   where):
     if host2 is None:
         host2 = host
     if port2 is None:
@@ -58,8 +66,8 @@ def compare_tables(host,  port,  user,  password,  database,
         database2 = database
     # We improve the name of the variable
     ignore_columns = ignore_column
-    csv1 = get_csv_from_query(host, port, user, password, database, table)
-    csv2 = get_csv_from_query(host2, port2, user2, password2, database2, table)
+    csv1 = get_csv_from_query(host, port, user, password, database, table, where)
+    csv2 = get_csv_from_query(host2, port2, user2, password2, database2, table, where)
 
     rc = subprocess.call(['graphtage -k -f csv '
                             + csv1 + ' '
@@ -67,13 +75,16 @@ def compare_tables(host,  port,  user,  password,  database,
     os.remove(csv1)
     os.remove(csv2)
     if rc != 0:
-        raise Exception("Graphtage return value is " + str(rc))
+        raise UnequalTablesException("Graphtage return value is " + str(rc))
+
+class UnequalTablesException(Exception):
+    """ my custom exception class """
 
 def main():
     try:
         compare_tables(standalone_mode=False)
         return 0
-    except:
+    except UnequalTablesException as ex:
         return 1
 
 if __name__ == '__main__':
