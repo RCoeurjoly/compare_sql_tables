@@ -8,7 +8,7 @@ import uuid
 import pdb
 
 
-def get_csv_from_query(host, port, user, password, database, table, where):
+def get_csv_from_query(host, port, user, password, database, table, where, ignore_columns):
     cnx = mysql.connector.connect(user=user,
                                   password=password,
                                   host=host,
@@ -28,12 +28,22 @@ def get_csv_from_query(host, port, user, password, database, table, where):
     my_file_name = '/tmp/' + str(uuid.uuid4()) + '.csv'
     fp = open(my_file_name, 'w')
     myFile = csv.writer(fp)
-    myFile.writerow(field_names)
-    myFile.writerows(rows)
+    clean_field_names, clean_rows = remove_ignored_columns(field_names, rows, set(ignore_columns))
+    myFile.writerow(clean_field_names)
+    myFile.writerows(clean_rows)
     fp.close()
     cursor.close()
     cnx.close()
     return my_file_name
+
+def remove_ignored_columns(field_names, rows, ignore_columns):
+    ignore_columns_pos = [i for i, field in enumerate(field_names)
+                          if field in ignore_columns]
+    clean_field_names = [field for i, field in enumerate(field_names) if i not in ignore_columns_pos]
+    clean_rows = []
+    for row in rows:
+        clean_rows.append([field for i, field in enumerate(row) if i not in ignore_columns_pos])
+    return clean_field_names, clean_rows
 
 @click.command()
 @click.option("--host", default="db", required=True, help="Database 1 IP.")
@@ -64,16 +74,17 @@ def compare_tables(host,  port,  user,  password,  database,
         password2 = password
     if database2 is None:
         database2 = database
-    # We improve the name of the variable
     ignore_columns = ignore_column
-    csv1 = get_csv_from_query(host, port, user, password, database, table, where)
-    csv2 = get_csv_from_query(host2, port2, user2, password2, database2, table, where)
+    csv1 = get_csv_from_query(host, port, user, password, database, table, where, ignore_columns)
+    csv2 = get_csv_from_query(host2, port2, user2, password2, database2, table, where, ignore_columns)
 
     rc = subprocess.call(['graphtage -k -f csv '
                             + csv1 + ' '
                             + csv2], shell=True)
-    os.remove(csv1)
-    os.remove(csv2)
+    print(csv1)
+    print(csv2)
+    #os.remove(csv1)
+    #os.remove(csv2)
     if rc != 0:
         raise UnequalTablesException("Graphtage return value is " + str(rc))
 
